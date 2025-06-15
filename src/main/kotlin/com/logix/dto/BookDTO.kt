@@ -16,19 +16,26 @@ data class BookDTO(
 ) {
 
   fun toEntity(id: Long): Book {
-    return Book(id = id, description = description, title = title)
-  }
-
-  fun toEntity(id: Long, updateDateTime: OffsetDateTime): Book {
     return Book(
       id = id,
-      description = description,
       title = title,
-      updatedAt = updateDateTime
+      description = description
+    )
+  }
+
+  fun toEntity(id: Long, updatedAt: OffsetDateTime): Book {
+    return Book(
+      id = id,
+      title = title,
+      description = description,
+      updatedAt = updatedAt
     )
   }
 
   fun toEntity(): Book {
-    return Book(description = description, title = title)
+    return Book(
+      title = title,
+      description = description
+    )
   }
 }

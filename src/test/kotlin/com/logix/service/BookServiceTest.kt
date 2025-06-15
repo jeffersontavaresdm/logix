@@ -4,9 +4,7 @@ import com.logix.dto.BookDTO
 import com.logix.entity.Book
 import com.logix.exception.BookNotFoundException
 import com.logix.repository.BookRepository
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,169 +14,170 @@ import kotlin.test.assertNotNull
 
 class BookServiceTest {
 
-    private lateinit var bookRepository: BookRepository
-    private lateinit var bookService: BookService
+  private lateinit var bookRepository: BookRepository
+  private lateinit var bookService: BookService
 
-    @BeforeEach
-    fun setup() {
-        bookRepository = mockk()
-        bookService = BookService(bookRepository)
-    }
+  @BeforeEach
+  fun setup() {
+    bookRepository = mockk()
+    bookService = BookService(bookRepository)
+  }
 
-    @Test
-    fun `findById should return book when it exists`() {
-        // Given
-        val bookId = 1L
-        val book = Book(
-            id = bookId,
-            title = "Test Book",
-            description = "Test Description",
-            createDateTime = OffsetDateTime.now(),
-            updateDateTime = OffsetDateTime.now()
-        )
-        every { bookRepository.findByEntityId(bookId) } returns book
+  @Test
+  fun `findById should return book when it exists`() {
+    // Given
+    val bookId = 1L
+    val book = Book(
+      id = bookId,
+      title = "Test Book",
+      description = "Test Description",
+      createdAt = OffsetDateTime.now(),
+      updatedAt = OffsetDateTime.now()
+    )
 
-        // When
-        val result = bookService.findById(bookId)
+    every { bookRepository.findByEntityId(bookId) } returns book
 
-        // Then
-        assertNotNull(result)
-        assertEquals(bookId, result.id)
-        assertEquals(book.title, result.title)
-        assertEquals(book.description, result.description)
-        verify { bookRepository.findByEntityId(bookId) }
-    }
+    // When
+    val result = bookService.findById(bookId)
 
-    @Test
-    fun `findById should throw BookNotFoundException when book does not exist`() {
-        // Given
-        val bookId = 1L
-        every { bookRepository.findByEntityId(bookId) } returns null
+    // Then
+    assertNotNull(result)
+    assertEquals(bookId, result.id)
+    assertEquals(book.title, result.title)
+    assertEquals(book.description, result.description)
+    verify { bookRepository.findByEntityId(bookId) }
+  }
 
-        // When/Then
-        assertThrows<BookNotFoundException> { bookService.findById(bookId) }
-        verify { bookRepository.findByEntityId(bookId) }
-    }
+  @Test
+  fun `findById should throw BookNotFoundException when book does not exist`() {
+    // Given
+    val bookId = 1L
+    every { bookRepository.findByEntityId(bookId) } returns null
 
-    @Test
-    fun `getBooks should return all books`() {
-        // Given
-        val books = listOf(
-            Book(
-                id = 1L,
-                title = "Book 1",
-                description = "Description 1",
-                createDateTime = OffsetDateTime.now(),
-                updateDateTime = OffsetDateTime.now()
-            ),
-            Book(
-                id = 2L,
-                title = "Book 2",
-                description = "Description 2",
-                createDateTime = OffsetDateTime.now(),
-                updateDateTime = OffsetDateTime.now()
-            )
-        )
-        every { bookRepository.findAll() } returns books
+    // When/Then
+    assertThrows<BookNotFoundException> { bookService.findById(bookId) }
+    verify { bookRepository.findByEntityId(bookId) }
+  }
 
-        // When
-        val result = bookService.getBooks()
+  @Test
+  fun `getBooks should return all books`() {
+    // Given
+    val books = listOf(
+      Book(
+        id = 1L,
+        title = "Book 1",
+        description = "Description 1",
+        createdAt = OffsetDateTime.now(),
+        updatedAt = OffsetDateTime.now()
+      ),
+      Book(
+        id = 2L,
+        title = "Book 2",
+        description = "Description 2",
+        createdAt = OffsetDateTime.now(),
+        updatedAt = OffsetDateTime.now()
+      )
+    )
+    every { bookRepository.findAll() } returns books
 
-        // Then
-        assertEquals(2, result.size)
-        assertEquals(books[0].title, result[0].title)
-        assertEquals(books[1].title, result[1].title)
-        verify { bookRepository.findAll() }
-    }
+    // When
+    val result = bookService.getBooks()
 
-    @Test
-    fun `create should save and return new book`() {
-        // Given
-        val bookDTO = BookDTO(title = "New Book", description = "New Description")
-        val savedBook = Book(
-            id = 1L,
-            title = bookDTO.title,
-            description = bookDTO.description,
-            createDateTime = OffsetDateTime.now(),
-            updateDateTime = OffsetDateTime.now()
-        )
-        every { bookRepository.save(any()) } returns savedBook
+    // Then
+    assertEquals(2, result.size)
+    assertEquals(books[0].title, result[0].title)
+    assertEquals(books[1].title, result[1].title)
+    verify { bookRepository.findAll() }
+  }
 
-        // When
-        val result = bookService.create(bookDTO)
+  @Test
+  fun `create should save and return new book`() {
+    // Given
+    val bookDTO = BookDTO(title = "New Book", description = "New Description")
+    val savedBook = Book(
+      id = 1L,
+      title = bookDTO.title,
+      description = bookDTO.description,
+      createdAt = OffsetDateTime.now(),
+      updatedAt = OffsetDateTime.now()
+    )
+    every { bookRepository.save(any()) } returns savedBook
 
-        // Then
-        assertNotNull(result)
-        assertEquals(savedBook.id, result.id)
-        assertEquals(savedBook.title, result.title)
-        assertEquals(savedBook.description, result.description)
-        verify { bookRepository.save(any()) }
-    }
+    // When
+    val result = bookService.create(bookDTO)
 
-    @Test
-    fun `updateById should update and return book`() {
-        // Given
-        val bookId = 1L
-        val bookDTO = BookDTO(title = "Updated Book", description = "Updated Description")
-        val existingBook = Book(
-            id = bookId,
-            title = "Old Title",
-            description = "Old Description",
-            createDateTime = OffsetDateTime.now(),
-            updateDateTime = OffsetDateTime.now()
-        )
-        val updatedBook = Book(
-            id = bookId,
-            title = bookDTO.title,
-            description = bookDTO.description,
-            createDateTime = existingBook.createDateTime,
-            updateDateTime = OffsetDateTime.now()
-        )
-        every { bookRepository.findByEntityId(bookId) } returns existingBook
-        every { bookRepository.save(any()) } returns updatedBook
+    // Then
+    assertNotNull(result)
+    assertEquals(savedBook.id, result.id)
+    assertEquals(savedBook.title, result.title)
+    assertEquals(savedBook.description, result.description)
+    verify { bookRepository.save(any()) }
+  }
 
-        // When
-        val result = bookService.updateById(bookId, bookDTO)
+  @Test
+  fun `updateById should update and return book`() {
+    // Given
+    val bookId = 1L
+    val bookDTO = BookDTO(title = "Updated book", description = "Updated Description")
+    val existingBook = Book(
+      id = bookId,
+      title = "Old Title",
+      description = "Old Description",
+      createdAt = OffsetDateTime.now(),
+      updatedAt = OffsetDateTime.now()
+    )
+    val updatedBook = Book(
+      id = bookId,
+      title = bookDTO.title,
+      description = bookDTO.description,
+      createdAt = existingBook.createdAt,
+      updatedAt = OffsetDateTime.now()
+    )
+    every { bookRepository.findByEntityId(bookId) } returns existingBook
+    every { bookRepository.save(any()) } returns updatedBook
 
-        // Then
-        assertNotNull(result)
-        assertEquals(bookId, result.id)
-        assertEquals(bookDTO.title, result.title)
-        assertEquals(bookDTO.description, result.description)
-        verify { bookRepository.findByEntityId(bookId) }
-        verify { bookRepository.save(any()) }
-    }
+    // When
+    val result = bookService.updateById(bookId, bookDTO)
 
-    @Test
-    fun `delete should remove book when it exists`() {
-        // Given
-        val bookId = 1L
-        val book = Book(
-            id = bookId,
-            title = "Test Book",
-            description = "Test Description",
-            createDateTime = OffsetDateTime.now(),
-            updateDateTime = OffsetDateTime.now()
-        )
-        every { bookRepository.findById(bookId) } returns java.util.Optional.of(book)
-        every { bookRepository.delete(any()) } just Runs
+    // Then
+    assertNotNull(result)
+    assertEquals(bookId, result.id)
+    assertEquals(bookDTO.title, result.title)
+    assertEquals(bookDTO.description, result.description)
+    verify { bookRepository.findByEntityId(bookId) }
+    verify { bookRepository.save(any()) }
+  }
 
-        // When
-        bookService.delete(bookId)
+  @Test
+  fun `delete should remove book when it exists`() {
+    // Given
+    val bookId = 1L
+    val book = Book(
+      id = bookId,
+      title = "Test Book",
+      description = "Test Description",
+      createdAt = OffsetDateTime.now(),
+      updatedAt = OffsetDateTime.now()
+    )
+    every { bookRepository.findByEntityId(bookId) } returns book
+    every { bookRepository.delete(any()) } just Runs
 
-        // Then
-        verify { bookRepository.findById(bookId) }
-        verify { bookRepository.delete(book) }
-    }
+    // When
+    bookService.delete(bookId)
 
-    @Test
-    fun `delete should throw BookNotFoundException when book does not exist`() {
-        // Given
-        val bookId = 1L
-        every { bookRepository.findById(bookId) } returns java.util.Optional.empty()
+    // Then
+    verify { bookRepository.findByEntityId(bookId) }
+    verify { bookRepository.delete(book) }
+  }
 
-        // When/Then
-        assertThrows<BookNotFoundException> { bookService.delete(bookId) }
-        verify { bookRepository.findById(bookId) }
-    }
+  @Test
+  fun `delete should throw BookNotFoundException when book does not exist`() {
+    // Given
+    val bookId = 1L
+    every { bookRepository.findByEntityId(bookId) } returns null
+
+    // When/Then
+    assertThrows<BookNotFoundException> { bookService.delete(bookId) }
+    verify { bookRepository.findByEntityId(bookId) }
+  }
 } 

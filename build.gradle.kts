@@ -1,65 +1,83 @@
 plugins {
-	kotlin("jvm") version "1.9.25"
-	kotlin("plugin.spring") version "1.9.25"
-	id("org.springframework.boot") version "3.5.0"
-	id("io.spring.dependency-management") version "1.1.7"
-	id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
-	kotlin("plugin.jpa") version "1.9.25"
+  id("org.springframework.boot") version "3.2.3"
+  id("io.spring.dependency-management") version "1.1.4"
+  kotlin("jvm") version "1.9.22"
+  kotlin("plugin.spring") version "1.9.22"
+  id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
+  kotlin("plugin.jpa") version "1.9.22"
 }
 
 group = "com.logix"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+  sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
-	runtimeOnly("com.h2database:h2")
-	
-	// Testing dependencies
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(module = "mockito-core")
-	}
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testImplementation("io.mockk:mockk:1.13.9")
-	testImplementation("com.ninjasquad:springmockk:4.0.2")
-	testImplementation("org.testcontainers:testcontainers:1.19.3")
-	testImplementation("org.testcontainers:junit-jupiter:1.19.3")
-	testImplementation("org.testcontainers:postgresql:1.19.3")
-	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
-	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
-	testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
+  // Spring Boot Starters
+  implementation("org.springframework.boot:spring-boot-starter-web")
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
-kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll("-Xjsr305=strict")
-	}
-}
+  // Kotlin Support
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-allOpen {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
+  // Database
+  runtimeOnly("org.postgresql:postgresql")
+  implementation("org.flywaydb:flyway-core")
+
+  // API Documentation
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+
+  // Testing
+  testImplementation(kotlin("test"))
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(module = "mockito-core")
+  }
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
+  testImplementation("io.mockk:mockk:1.13.9")
+  testImplementation("org.springframework.security:spring-security-test")
+  testImplementation("org.testcontainers:testcontainers:1.19.7")
+  testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+  testImplementation("org.testcontainers:postgresql:1.19.7")
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
-	testLogging {
-		events("passed", "skipped", "failed")
-	}
+  useJUnitPlatform()
+  testLogging {
+    events("passed", "skipped", "failed")
+    showStandardStreams = true
+  }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  kotlinOptions {
+    freeCompilerArgs += "-Xjsr305=strict"
+    jvmTarget = "17"
+  }
+}
+
+allOpen {
+  annotation("jakarta.persistence.Entity")
+  annotation("jakarta.persistence.MappedSuperclass")
+  annotation("jakarta.persistence.Embeddable")
+}
+
+// Configuração para limpar o diretório de relatórios antes de cada execução
+tasks.clean {
+  doLast {
+    delete("${project.buildDir}/reports/tests")
+  }
 }

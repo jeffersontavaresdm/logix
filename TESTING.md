@@ -37,7 +37,6 @@ testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 
 // Mocking
 testImplementation("io.mockk:mockk:1.13.9")
-testImplementation("com.ninjasquad:springmockk:4.0.2")
 
 // TestContainers para testes de integração
 testImplementation("org.testcontainers:testcontainers:1.19.3")

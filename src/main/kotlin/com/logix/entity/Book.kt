@@ -13,15 +13,15 @@ class Book(
   var title: String,
   val description: String? = null,
   val createdAt: OffsetDateTime = OffsetDateTime.now(),
-  val updatedAt: OffsetDateTime = OffsetDateTime.now(),
+  val updatedAt: OffsetDateTime = OffsetDateTime.now()
 ) {
 
   init {
-    formatTitle(this.title)
+    title = formatTitle(title)
   }
 
-  private final fun formatTitle(title: String) {
-    title
+  private fun formatTitle(title: String): String {
+    return title
       .trim()
       .lowercase()
       .replaceFirstChar { character -> character.uppercase() }
