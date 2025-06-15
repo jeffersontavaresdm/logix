@@ -22,7 +22,7 @@ class BookService(private val repository: BookRepository) {
   }
 
   fun updateById(id: Long, bookDTO: BookDTO): BookDTO {
-    val existingBook = repository.findByEntityId(id) ?: throw BookNotFoundException(id)
+    repository.findByEntityId(id) ?: throw BookNotFoundException(id)
     val updatedBook = repository.save(bookDTO.toEntity(id = id, updatedAt = OffsetDateTime.now()))
     return updatedBook.toDTO()
   }

@@ -34,6 +34,7 @@ dependencies {
   // Database
   runtimeOnly("org.postgresql:postgresql")
   implementation("org.flywaydb:flyway-core")
+  runtimeOnly("com.h2database:h2")
 
   // API Documentation
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")

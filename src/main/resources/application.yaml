@@ -25,11 +25,16 @@ spring:
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
     display-request-duration: true
     operationsSorter: method
     tagsSorter: alpha
     doc-expansion: none
     try-it-out-enabled: true
     filter: true
+    urls:
+      - url: /api-docs
+        name: API Documentation
