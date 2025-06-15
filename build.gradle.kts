@@ -27,8 +27,21 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
 	runtimeOnly("com.h2database:h2")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	
+	// Testing dependencies
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(module = "mockito-core")
+	}
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("io.mockk:mockk:1.13.9")
+	testImplementation("com.ninjasquad:springmockk:4.0.2")
+	testImplementation("org.testcontainers:testcontainers:1.19.3")
+	testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+	testImplementation("org.testcontainers:postgresql:1.19.3")
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+	testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -46,4 +59,7 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	testLogging {
+		events("passed", "skipped", "failed")
+	}
 }
