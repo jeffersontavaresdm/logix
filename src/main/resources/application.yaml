@@ -27,4 +27,9 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    display-request-duration: true
     operationsSorter: method
+    tagsSorter: alpha
+    doc-expansion: none
+    try-it-out-enabled: true
+    filter: true
