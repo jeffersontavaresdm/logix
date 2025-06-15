@@ -1,7 +1,5 @@
 # Logix API
 
-## English
-
 ### Overview
 API created to start the study of Kotlin with Spring using the REST architecture
 
