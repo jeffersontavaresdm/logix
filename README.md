@@ -3,7 +3,7 @@
 ## English
 
 ### Overview
-Logix API is a modern RESTful API built with Kotlin and Spring Boot. It provides a robust backend solution with JPA support and OpenAPI documentation.
+API created to start the study of Kotlin with Spring using the REST architecture
 
 ### Technologies
 - Kotlin 1.9.25
