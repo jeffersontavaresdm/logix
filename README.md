@@ -4,9 +4,8 @@
 API created to start the study of Kotlin with Spring using the REST architecture
 
 ### Technologies
-- Kotlin 1.9.25
-- Spring Boot 3.5.0
-- Java 21
+- Kotlin
+- Spring Boot
 - Spring Data JPA
 - H2 Database
 - SpringDoc OpenAPI
@@ -27,12 +26,12 @@ API created to start the study of Kotlin with Spring using the REST architecture
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
+git clone https://github.com/jeffersontavaresdm/logix.git
 ```
 
 2. Navigate to the project directory:
 ```bash
-cd logix-api
+cd logix
 ```
 
 3. Build the project:
