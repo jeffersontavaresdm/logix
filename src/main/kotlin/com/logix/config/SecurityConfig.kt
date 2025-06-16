@@ -76,7 +76,7 @@ class SecurityConfig {
             "/api-docs/**",
             "/h2-console/**",
             "/webjars/**"
-          ).authenticated()
+          ).permitAll()
           .anyRequest().authenticated()
       }
       .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
